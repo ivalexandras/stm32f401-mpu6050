@@ -7,3 +7,7 @@ stm32f401ccu6 + mpu6050 + ssd1306
 1. USART1 - PA9 - TX1, PA10 - RX1 -> for debugging and faster information output
 2. I2C1 - PB6 - SCL1, PB7 - SDA1 -> for oled display (default PULLUP (Open-Drain))
 3. I2C2 - PB10 - SCL2, PB3 - SDA2 -> for mpu6050 (default PULLUP (Open-Drain))
+
+Pinout & Configuration
+
+<img width="583" height="636" alt="image" src="https://github.com/user-attachments/assets/7387d86e-e84f-452c-9fe5-b926a092fce2" />
