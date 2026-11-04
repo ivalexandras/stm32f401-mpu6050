@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ssd1306/ssd1306.h"
@@ -32,7 +33,19 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+GPIO_PinState Curr_State = GPIO_PIN_RESET;
+GPIO_PinState Prev_State = GPIO_PIN_RESET;
 
+void button_debouncing()
+{
+	Curr_State = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
+	if (Curr_State == GPIO_PIN_RESET && Prev_State == GPIO_PIN_SET)
+	{
+		HAL_Delay(15);
+		Curr_State = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
+	}
+	Prev_State = Curr_State;
+}
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -73,7 +86,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -110,10 +122,25 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	 ssd1306_SetCursor(0, 0);
-	 ssd1306_WriteString("Hello", Font_7x10, White);
-	 ssd1306_UpdateScreen();
+
     /* USER CODE BEGIN 3 */
+	button_debouncing();
+	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)==GPIO_PIN_RESET)
+		{
+			ssd1306_Fill(Black);
+			ssd1306_SetCursor(0, 0);
+			ssd1306_WriteString("Hello", Font_7x10, White);
+			ssd1306_UpdateScreen();
+		}
+	button_debouncing();
+	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)==GPIO_PIN_RESET)
+		{
+			ssd1306_Fill(Black);
+			ssd1306_UpdateScreen();
+			ssd1306_SetCursor(0, 0);
+			ssd1306_WriteString("ok bye", Font_7x10, White);
+			ssd1306_UpdateScreen();
+		}
   }
   /* USER CODE END 3 */
 }
@@ -267,13 +294,20 @@ static void MX_USART1_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* USER CODE BEGIN MX_GPIO_Init_1 */
 
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin : PA0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
