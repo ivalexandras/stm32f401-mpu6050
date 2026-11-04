@@ -18,10 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "ssd1306/ssd1306.h"
+#include "ssd1306/ssd1306_fonts.h"
+#include "ssd1306/ssd1306_conf.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -97,7 +98,11 @@ int main(void)
   MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  //Init OLED display
+  ssd1306_Init();
 
+  ssd1306_Fill(Black);
+  ssd1306_UpdateScreen();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -105,7 +110,9 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	 ssd1306_SetCursor(0, 0);
+	 ssd1306_WriteString("Hello", Font_7x10, White);
+	 ssd1306_UpdateScreen();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
